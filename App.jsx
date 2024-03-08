@@ -1,7 +1,10 @@
 import * as React from "react";
+import { PaperProvider } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
-import { Home, Item } from "./src/screens";
-import { Entypo } from "@expo/vector-icons";
+import { Home, Goal, Notebook, Add, Info } from "./src/screens";
+import { FontAwesome } from "@expo/vector-icons";
+
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -23,31 +26,155 @@ const screenOptions = {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator screenOptions={screenOptions}>
-        <Tab.Screen
-          name="home"
-          component={Home}
-          options={{
-            tabBarIcon: ({ focused }) => {
-              return (
-                <View
-                  style={{ alignItems: "center", justifyContent: "center" }}
-                >
-                  <Entypo
-                    name="home"
-                    size={24}
-                    color={focused ? "#16247d" : "#111"}
-                  />
-                  <Text style={{ fonSize: 12, color: "#16247d" }}>HOME</Text>
-                </View>
-              );
-            },
-          }}
-        />
-        <Tab.Screen name="item" component={Item} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <PaperProvider>
+      <NavigationContainer>
+        <Tab.Navigator screenOptions={screenOptions}>
+          <Tab.Screen
+            name="home"
+            component={Home}
+            options={{
+              tabBarIcon: ({ focused }) => {
+                return (
+                  <View
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                  >
+                    <FontAwesome
+                      name="home"
+                      size={24}
+                      color={focused ? "#00CCFF" : "#555"}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: focused ? "#00CCFF" : "#555",
+                      }}
+                    >
+                      HOME
+                    </Text>
+                  </View>
+                );
+              },
+            }}
+          />
+          <Tab.Screen
+            name="Goal"
+            component={Goal}
+            options={{
+              tabBarIcon: ({ focused }) => {
+                return (
+                  <View
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                  >
+                    <MaterialCommunityIcons
+                      name="arm-flex"
+                      size={24}
+                      color={focused ? "#00CCFF" : "#555"}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: focused ? "#00CCFF" : "#555",
+                      }}
+                    >
+                      GOAL
+                    </Text>
+                  </View>
+                );
+              },
+            }}
+          />
+
+          <Tab.Screen
+            name="Add"
+            component={Add}
+            options={{
+              tabBarIcon: ({ focused }) => {
+                return (
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      position: "absolute",
+                      bottom: 10,
+                    }}
+                  >
+                    <FontAwesome
+                      name="plus-circle"
+                      size={60}
+                      color={focused ? "#00CCFF" : "#555"}
+                    />
+                  </View>
+                );
+              },
+            }}
+          />
+
+          <Tab.Screen
+            name="Notebook"
+            component={Notebook}
+            options={{
+              tabBarIcon: ({ focused }) => {
+                return (
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FontAwesome
+                      name="book"
+                      size={24}
+                      color={focused ? "#00CCFF" : "#555"}
+                    />
+
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: focused ? "#00CCFF" : "#555",
+                      }}
+                    >
+                      NOTE
+                    </Text>
+                  </View>
+                );
+              },
+            }}
+          />
+
+          <Tab.Screen
+            name="Info"
+            component={Info}
+            options={{
+              tabBarIcon: ({ focused }) => {
+                return (
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FontAwesome
+                      name="info-circle"
+                      size={24}
+                      color={focused ? "#00CCFF" : "#555"}
+                    />
+
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: focused ? "#00CCFF" : "#555",
+                      }}
+                    >
+                      INFO
+                    </Text>
+                  </View>
+                );
+              },
+            }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
 

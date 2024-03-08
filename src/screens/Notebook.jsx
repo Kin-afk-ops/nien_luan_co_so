@@ -1,18 +1,21 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Dimensions } from "react-native";
-import { Container } from "../components/styles/global";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const Home = () => {
+import { Container } from "../components/styles/global";
+
+const Notebook = () => {
   return (
     <Container width={windowWidth} height={windowHeight}>
-      <Text>Haha</Text>
+      <Text>Notebook</Text>
     </Container>
   );
 };
 
-export default Home;
+export default Notebook;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {},
+});

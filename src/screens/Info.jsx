@@ -5,14 +5,14 @@ import { Container } from "../components/styles/global";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const Home = () => {
+const Info = () => {
   return (
     <Container width={windowWidth} height={windowHeight}>
-      <Text>Haha</Text>
+      <Text>Info</Text>
     </Container>
   );
 };
 
-export default Home;
+export default Info;
 
 const styles = StyleSheet.create({});

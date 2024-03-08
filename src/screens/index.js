@@ -1,4 +1,7 @@
 import Home from "./Home";
-import Item from "./Item";
+import Goal from "./Goal";
+import Notebook from "./Notebook";
+import Add from "./Add";
+import Info from "./Info";
 
-export { Home, Item };
+export { Home, Goal, Notebook, Add, Info };

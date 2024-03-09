@@ -1,28 +1,40 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Searchbar } from "react-native-paper";
 import { Dimensions } from "react-native";
 import { Container, primaryColor } from "../components/styles/global";
 import axios from "axios";
+import WordList from "../components/WordList";
+import Loading from "../components/Loading";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Add = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [words, setWords] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
     try {
       if (searchQuery !== "") {
+        setLoading(true);
         const res = await axios.get(
           `https://api.dictionaryapi.dev/api/v2/entries/en/${searchQuery.toLowerCase()}`
         );
-        console.log(searchQuery);
-        console.log(res.data);
+
+        if (res.data) {
+          setLoading(false);
+          setWords(res.data);
+        }
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleClear = () => {
+    setWords([]);
   };
 
   return (
@@ -44,7 +56,10 @@ const Add = () => {
         }}
         returnKeyType="search"
         onSubmitEditing={handleSearch}
+        onClearIconPress={handleClear}
       />
+
+      {loading ? <Loading /> : <WordList words={words} />}
     </Container>
   );
 };

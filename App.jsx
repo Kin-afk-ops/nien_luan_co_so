@@ -49,7 +49,7 @@ export default function App() {
                         color: focused ? "#00CCFF" : "#555",
                       }}
                     >
-                      HOME
+                      Nhà
                     </Text>
                   </View>
                 );
@@ -76,7 +76,7 @@ export default function App() {
                         color: focused ? "#00CCFF" : "#555",
                       }}
                     >
-                      GOAL
+                      Mục tiêu
                     </Text>
                   </View>
                 );
@@ -133,7 +133,7 @@ export default function App() {
                         color: focused ? "#00CCFF" : "#555",
                       }}
                     >
-                      NOTE
+                      Sổ tay
                     </Text>
                   </View>
                 );
@@ -165,7 +165,7 @@ export default function App() {
                         color: focused ? "#00CCFF" : "#555",
                       }}
                     >
-                      INFO
+                      thông tin
                     </Text>
                   </View>
                 );

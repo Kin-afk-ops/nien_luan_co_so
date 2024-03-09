@@ -5,7 +5,7 @@ import { Home, Goal, Notebook, Add, Info } from "./src/screens";
 import { FontAwesome } from "@expo/vector-icons";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 

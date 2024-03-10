@@ -6,9 +6,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 const windowWidth = Dimensions.get("window").width;
 
-const WordList = ({ words, setListMode, setWordItem, setItemMode }) => {
+const WordList = ({ words, setListModeAdd, setWordItem, setItemMode }) => {
   const handleSetWordItem = (word) => {
-    setListMode(false);
+    setListModeAdd(false);
     setWordItem(word);
     setItemMode(true);
   };

@@ -7,34 +7,46 @@ import axios from "axios";
 import WordList from "../components/WordList";
 import Loading from "../components/Loading";
 import WordItem from "../components/WordItem";
+import { useBackHandler } from "@react-native-community/hooks";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const Add = () => {
+const Add = ({}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [words, setWords] = useState([]);
   const [itemMode, setItemMode] = useState(false);
   const [wordItem, setWordItem] = useState({});
   const [loading, setLoading] = useState(false);
-  const [listMode, setListMode] = useState(true);
+  const [listModeAdd, setListModeAdd] = useState(true);
 
-  useEffect(() => {
-    const backAction = () => {
-      if (itemMode) {
-        setListMode(true);
-        setItemMode(false);
-        return true;
-      }
-    };
+  // const exitApp = () => BackHandler.exitApp()
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     if (itemMode) {
+  //       setListModeAdd(true);
+  //       setItemMode(false);
+  //       return true;
+  //     }
+  //   };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
 
-    return () => backHandler.remove();
-  }, []);
+  //   return () => backHandler.remove();
+  // }, []);
+
+  useBackHandler(() => {
+    if (itemMode) {
+      setListModeAdd(true);
+      setItemMode(false);
+      return true;
+    }
+    // let the default thing happen
+    return false;
+  });
 
   const handleSearch = async () => {
     try {
@@ -45,7 +57,7 @@ const Add = () => {
         );
 
         if (res.data) {
-          setListMode(true);
+          setListModeAdd(true);
           setLoading(false);
           setWords(res.data);
         }
@@ -56,7 +68,7 @@ const Add = () => {
   };
 
   const handleClear = () => {
-    setListMode(true);
+    setListModeAdd(true);
     setItemMode(false);
   };
 
@@ -90,10 +102,10 @@ const Add = () => {
           <Loading />
         ) : (
           <>
-            {listMode && (
+            {listModeAdd && (
               <WordList
                 words={words}
-                setListMode={setListMode}
+                setListModeAdd={setListModeAdd}
                 setWordItem={setWordItem}
                 setItemMode={setItemMode}
               />

@@ -61,6 +61,7 @@ const WordItem = ({ wordItem }) => {
               <>
                 {index !== wordItem?.phonetics.length - 1 ? (
                   <Text
+                    key={index}
                     variant="titleLarge"
                     style={{
                       fontWeight: "bold",
@@ -72,6 +73,7 @@ const WordItem = ({ wordItem }) => {
                   </Text>
                 ) : (
                   <Text
+                    key={index}
                     variant="titleLarge"
                     style={{
                       fontWeight: "bold",
@@ -90,7 +92,7 @@ const WordItem = ({ wordItem }) => {
 
       <MeaningContainer>
         {wordItem?.meanings.map((m, index) => (
-          <WordMeaning meaning={m} />
+          <WordMeaning meaning={m} key={index} />
         ))}
       </MeaningContainer>
     </ItemContainer>

@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, ScrollView, BackHandler } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { useBackHandler } from "@react-native-community/hooks";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -17,43 +18,51 @@ import WordItem from "../components/WordItem";
 import Loading from "../components/Loading";
 
 const Notebook = () => {
-  const index = 0;
-  const [listMode, setListMode] = useState(true);
+  const [listModeNote, setListModeNote] = useState(true);
   const [word, setWord] = useState({});
   const [loading, setLoading] = useState(false);
+  const index = 0;
 
-  useEffect(() => {
-    const backAction = () => {
-      setListMode(true);
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     setListModeNote(true);
+  //     return true;
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
+
+  //   return () => backHandler.remove();
+  // }, []);
+
+  useBackHandler(() => {
+    if (!listModeNote) {
+      setListModeNote(true);
       return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
+    }
+    // let the default thing happen
+    return false;
+  });
 
   const handleSetWordItem = async () => {
-    setListMode(false);
+    setListModeNote(false);
     setLoading(true);
     const res = await axios.get(
       `https://api.dictionaryapi.dev/api/v2/entries/en/hello`
     );
 
     if (res.data) {
+      await setWord(res.data[0]);
       setLoading(false);
-      setWord(res.data[index]);
-      setListMode(false);
     }
   };
 
   return (
     <Container width={windowWidth} height={windowHeight}>
       <ScrollView>
-        {listMode ? (
+        {listModeNote ? (
           <View>
             <List.Item
               // key={index}
@@ -84,7 +93,7 @@ const Notebook = () => {
                   />
                 </View>
               )}
-              onPress={() => handleSetWordItem()}
+              onPress={handleSetWordItem}
             />
           </View>
         ) : (

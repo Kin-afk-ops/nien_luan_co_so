@@ -6,9 +6,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 const windowWidth = Dimensions.get("window").width;
 
-const WordList = ({ words, setWords, setWordItem, setItemMode }) => {
+const WordList = ({ words, setListMode, setWordItem, setItemMode }) => {
   const handleSetWordItem = (word) => {
-    setWords([]);
+    setListMode(false);
     setWordItem(word);
     setItemMode(true);
   };
@@ -18,6 +18,7 @@ const WordList = ({ words, setWords, setWordItem, setItemMode }) => {
       {words?.length !== 0 &&
         words?.map((word, index) => (
           <List.Item
+            key={index}
             title={word.word}
             description={word.phonetic}
             style={{

@@ -1,10 +1,11 @@
-import { StyleSheet, View } from "react-native";
+import { BackHandler, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
-import React from "react";
+import React, { useEffect } from "react";
 import { Dimensions } from "react-native";
 import styled from "styled-components/native";
 import { primaryColor, textColor, textHeaderColor } from "./styles/global";
 import WordMeaning from "./WordMeaning";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -22,18 +23,31 @@ const MeaningContainer = styled.View`
   margin-top: 30px;
 `;
 
+const handleSaveWord = () => {};
+
 const WordItem = ({ wordItem }) => {
   return (
     <ItemContainer width={windowWidth}>
-      <Text
-        variant="displayLarge"
+      <View
         style={{
-          fontWeight: "bold",
-          color: textHeaderColor,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        {wordItem.word}
-      </Text>
+        <Text
+          variant="displayLarge"
+          style={{
+            fontWeight: "bold",
+            color: textHeaderColor,
+          }}
+        >
+          {wordItem.word}
+        </Text>
+        <TouchableOpacity onPress={handleSaveWord}>
+          <FontAwesome5 name="save" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
 
       <View
         style={{
@@ -45,7 +59,7 @@ const WordItem = ({ wordItem }) => {
           <>
             {w.text && (
               <>
-                {index !== wordItem.phonetics.length - 1 ? (
+                {index !== wordItem?.phonetics.length - 1 ? (
                   <Text
                     variant="titleLarge"
                     style={{

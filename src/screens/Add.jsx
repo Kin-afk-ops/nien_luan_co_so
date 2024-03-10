@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Searchbar } from "react-native-paper";
 import { Dimensions } from "react-native";
@@ -17,6 +17,24 @@ const Add = () => {
   const [itemMode, setItemMode] = useState(false);
   const [wordItem, setWordItem] = useState({});
   const [loading, setLoading] = useState(false);
+  const [listMode, setListMode] = useState(true);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (itemMode) {
+        setListMode(true);
+        setItemMode(false);
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const handleSearch = async () => {
     try {
@@ -27,6 +45,7 @@ const Add = () => {
         );
 
         if (res.data) {
+          setListMode(true);
           setLoading(false);
           setWords(res.data);
         }
@@ -37,7 +56,7 @@ const Add = () => {
   };
 
   const handleClear = () => {
-    setWords([]);
+    setListMode(true);
     setItemMode(false);
   };
 
@@ -70,15 +89,19 @@ const Add = () => {
         {loading ? (
           <Loading />
         ) : (
-          <WordList
-            words={words}
-            setWords={setWords}
-            setWordItem={setWordItem}
-            setItemMode={setItemMode}
-          />
+          <>
+            {listMode && (
+              <WordList
+                words={words}
+                setListMode={setListMode}
+                setWordItem={setWordItem}
+                setItemMode={setItemMode}
+              />
+            )}
+          </>
         )}
 
-        {itemMode === true && <WordItem wordItem={wordItem} />}
+        {itemMode && <WordItem wordItem={wordItem} />}
       </ScrollView>
     </Container>
   );

@@ -7,8 +7,8 @@ export const textColor = "#555";
 export const Container = styled.View`
   background-color: #ccffff;
 
-  width: ${(props) => props.width};
-  height: ${(props) => props.height};
+  width: ${(props) => props.width}px;
+  height: ${(props) => props.height}px;
   display: flex;
   align-items: center;
   padding-top: 40px;

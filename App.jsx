@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import * as React from "react";
 import { PaperProvider } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
@@ -8,8 +9,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import WordMeaning from "./src/components/WordMeaning";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 const screenOptions = {
   tabBarShowLabel: false,
   headerShown: false,

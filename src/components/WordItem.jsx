@@ -53,6 +53,7 @@ const WordItem = ({ wordItem }) => {
         style={{
           display: "flex",
           flexDirection: "row",
+          flexWrap: "wrap",
         }}
       >
         {wordItem?.phonetics.map((w, index) => (

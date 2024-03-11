@@ -21,9 +21,7 @@ const Info = () => {
           marginTop: 40,
         }}
       >
-        <Text variant="titleMedium">
-          <Text>Họ và tên:</Text> Nguyễn Vũ Linh
-        </Text>
+        <Text variant="titleMedium">Họ và tên: Nguyễn Vũ Linh</Text>
         <Text variant="titleMedium">MSSV: B2110130</Text>
         <Text variant="titleMedium">Lớp: DI2196A2</Text>
         <Text variant="titleMedium">

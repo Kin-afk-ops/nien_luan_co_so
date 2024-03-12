@@ -14,7 +14,7 @@ const windowHeight = Dimensions.get("window").height;
 
 const Goal = () => {
   const [value, setValue] = useState(0);
-  const temp = 0;
+  const temp = 1500;
 
   return (
     <Container width={windowWidth} height={windowHeight}>
@@ -39,7 +39,7 @@ const Goal = () => {
           inActiveStrokeOpacity={0.2}
           inActiveStrokeWidth={25}
           activeStrokeWidth={25}
-          duration={3000}
+          duration={2000}
           progressValueColor={"#ecf0f1"}
           showProgressValue={false}
           title={`${temp} từ/3000 từ`}

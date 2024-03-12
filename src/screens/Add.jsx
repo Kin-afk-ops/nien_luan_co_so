@@ -8,6 +8,7 @@ import WordList from "../components/WordList";
 import Loading from "../components/Loading";
 import WordItem from "../components/WordItem";
 import { useBackHandler } from "@react-native-community/hooks";
+import user from "../data/user.json";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -48,6 +49,8 @@ const Add = ({}) => {
     return false;
   });
 
+  useEffect(() => {}, []);
+
   const handleSearch = async () => {
     try {
       if (searchQuery !== "") {
@@ -55,7 +58,6 @@ const Add = ({}) => {
         const res = await axios.get(
           `https://api.dictionaryapi.dev/api/v2/entries/en/${searchQuery.toLowerCase()}`
         );
-
         if (res.data) {
           setListModeAdd(true);
           setLoading(false);

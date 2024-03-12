@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { List } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { addNode } from "../controller/tree";
 const windowWidth = Dimensions.get("window").width;
 
 const WordList = ({ words, setListModeAdd, setWordItem, setItemMode }) => {
@@ -33,7 +34,12 @@ const WordList = ({ words, setListModeAdd, setWordItem, setItemMode }) => {
                 {/* <MaterialIcons name="multitrack-audio" size={24} color="black" /> */}
                 {/* )} */}
 
-                <FontAwesome5 name="save" size={24} color="black" />
+                <FontAwesome5
+                  name="save"
+                  size={24}
+                  color="black"
+                  onPress={() => addNode(word)}
+                />
               </View>
             )}
             onPress={() => handleSetWordItem(word)}

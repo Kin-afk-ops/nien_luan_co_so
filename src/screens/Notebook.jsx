@@ -16,26 +16,25 @@ import { List } from "react-native-paper";
 import axios from "axios";
 import WordItem from "../components/WordItem";
 import Loading from "../components/Loading";
+import { readWord } from "../controller/tree";
+import { useIsFocused } from "@react-navigation/native";
 
 const Notebook = () => {
   const [listModeNote, setListModeNote] = useState(true);
   const [word, setWord] = useState({});
   const [loading, setLoading] = useState(false);
+  const [words, setWords] = useState([]);
   const index = 0;
 
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     setListModeNote(true);
-  //     return true;
-  //   };
+  const isFocused = useIsFocused();
 
-  //   const backHandler = BackHandler.addEventListener(
-  //     "hardwareBackPress",
-  //     backAction
-  //   );
+  useEffect(() => {
+    const getWords = async () => {
+      setWords(await readWord());
+    };
 
-  //   return () => backHandler.remove();
-  // }, []);
+    getWords();
+  }, [isFocused]);
 
   useBackHandler(() => {
     if (!listModeNote) {
@@ -46,17 +45,12 @@ const Notebook = () => {
     return false;
   });
 
-  const handleSetWordItem = async () => {
+  const handleSetWordItem = (word) => {
     setListModeNote(false);
     setLoading(true);
-    const res = await axios.get(
-      `https://api.dictionaryapi.dev/api/v2/entries/en/hello`
-    );
 
-    if (res.data) {
-      await setWord(res.data[0]);
-      setLoading(false);
-    }
+    setWord(word);
+    setLoading(false);
   };
 
   return (
@@ -64,37 +58,40 @@ const Notebook = () => {
       <ScrollView>
         {listModeNote ? (
           <View>
-            <List.Item
-              // key={index}
-              title="Hello"
-              description="haha"
-              style={{
-                width: windowWidth * 0.9,
-                backgroundColor: "#fff",
-                marginTop: 10,
-                borderRadius: 10,
-              }}
-              right={(props) => (
-                <View
+            {words.length !== 0 &&
+              words?.map((w, index) => (
+                <List.Item
+                  key={index}
+                  title={w.word}
+                  description={w.phonetic && w.phonetic}
                   style={{
-                    alignItems: "center",
-                    justifyContent: "center",
+                    width: windowWidth * 0.9,
+                    backgroundColor: "#fff",
+                    marginTop: 10,
+                    borderRadius: 10,
                   }}
-                >
-                  {/* {audioUrl && ( */}
-                  {/* <MaterialIcons name="multitrack-audio" size={24} color="black" /> */}
-                  {/* )} */}
+                  right={(props) => (
+                    <View
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {/* {audioUrl && ( */}
+                      {/* <MaterialIcons name="multitrack-audio" size={24} color="black" /> */}
+                      {/* )} */}
 
-                  <FontAwesome5
-                    name="save"
-                    size={24}
-                    color="#00CCFF"
-                    // onPress={handleWord}
-                  />
-                </View>
-              )}
-              onPress={handleSetWordItem}
-            />
+                      <FontAwesome5
+                        name="save"
+                        size={24}
+                        color="#00CCFF"
+                        // onPress={handleWord}
+                      />
+                    </View>
+                  )}
+                  onPress={() => handleSetWordItem(w)}
+                />
+              ))}
           </View>
         ) : (
           <View>{loading ? <Loading /> : <WordItem wordItem={word} />}</View>

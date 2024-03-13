@@ -57,7 +57,7 @@ const WordItem = ({ wordItem }) => {
         }}
       >
         {wordItem?.phonetics.map((w, index) => (
-          <>
+          <View key={index}>
             {w.text && (
               <>
                 {index !== wordItem?.phonetics.length - 1 ? (
@@ -87,7 +87,7 @@ const WordItem = ({ wordItem }) => {
                 )}
               </>
             )}
-          </>
+          </View>
         ))}
       </View>
 

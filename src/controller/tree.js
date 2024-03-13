@@ -3,7 +3,8 @@ const { StorageAccessFramework } = FileSystem;
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import tree from "../data/tree.json";
-import { Alert } from "react-native";
+
+import BinarySearchTree from "../class/Node";
 
 const createUri = async () => {
   const permissions =
@@ -17,7 +18,7 @@ const createUri = async () => {
       console.log(error);
     }
   } else {
-    Alert("Bạn phải cấp quyền");
+    alert("Bạn phải cấp quyền");
   }
 };
 
@@ -28,78 +29,151 @@ const getUri = async () => {
   return dataUri;
 };
 
-const openFile = async () => {
-  const dataUri = await getUri();
-
+const openFile = async (dataUri) => {
   const uriFolder = await StorageAccessFramework.readDirectoryAsync(dataUri);
 
   const uriFile = uriFolder[0];
 
-  const file = await StorageAccessFramework.readAsStringAsync(uriFile);
+  if (uriFile) {
+    const file = await StorageAccessFramework.readAsStringAsync(uriFile);
 
-  const tree = JSON.parse(file);
-  return tree;
+    return JSON.parse(file);
+  } else {
+    return null;
+  }
 };
 
-const addNodeToTree = async (node, tree) => {
-  if (tree === null) {
+const createFile = async (data, uri) => {
+  if (data) {
+    await StorageAccessFramework.createFileAsync(
+      uri,
+      "tree.json",
+      "application/json"
+    )
+      .then(async (fileUri) => {
+        // Save data to newly created file
+        await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(data), {
+          encoding: FileSystem.EncodingType.UTF8,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  } else {
+    alert("Lưu thất bại");
   }
+};
+
+const savFile = async (data, dataUri) => {
+  const uriFolder = await StorageAccessFramework.readDirectoryAsync(dataUri);
+
+  const uriFile = uriFolder[0];
+
+  if (uriFile) {
+    await FileSystem.writeAsStringAsync(uriFile, JSON.stringify(data), {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
+  }
+};
+
+const addNodeToTree = async (tree) => {
+  let dataUri = await getUri();
+
+  while (!dataUri) {
+    await createUri();
+    dataUri = await getUri();
+  }
+
   // Check if permission granted
 
-  await createUri();
-  const dataUri = await getUri();
-
-  let data = node;
-
   // Create file and pass it's SAF URI
+};
 
-  await StorageAccessFramework.createFileAsync(
-    dataUri,
-    "tree.json",
-    "application/json"
-  )
-    .then(async (fileUri) => {
-      // Save data to newly created file
-      await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(data), {
-        encoding: FileSystem.EncodingType.UTF8,
-      });
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+const checkTree = (data, index, word) => {
+  let checked = false;
+
+  data.forEach((d) => {
+    if (d.index === index && d.data.word === word.word) {
+      checked = true;
+    }
+  });
+  return checked;
 };
 
 export const readTree = () => {};
 export const checkNode = () => {};
 
-const addNodeItem = (word, tree) => {
-  if (tree === null) {
-    const newWord = {
-      word: {
-        wordItem: word,
-        like: false,
-        done: false,
+export const addWord = async (word, index) => {
+  let dataUri = await getUri();
+
+  while (dataUri === "") {
+    await createUri();
+    dataUri = await getUri();
+  }
+  const treeFile = await openFile(dataUri);
+  if (treeFile === null) {
+    const dataArray = [
+      {
+        data: word,
+        index: index,
       },
-      left: null,
-      right: null,
-    };
+    ];
+
+    await createFile(dataArray, dataUri);
   } else {
-    if (tree.word.wordItem.word === word) {
-      Alert("Từ đã tồn tại trong sổ tay");
-    } else if (tree.word.wordItem.word > word) {
-      addNodeItem(word, tree.left);
+    const dataArray = treeFile;
+    const checked = checkTree(dataArray, index, word);
+
+    if (checked) {
+      alert("Từ này đã từng được thêm vào sổ tay");
     } else {
-      addNodeItem(word, tree.right);
+      const data = {
+        data: word,
+        index: index,
+      };
+
+      dataArray.push(data);
+      await savFile(dataArray, dataUri);
+      alert("Đã lưu từ");
     }
   }
 };
 
-export const addNode = async (word) => {
-  const tree = openFile();
+export const readWord = async () => {
+  let dataUri = await getUri();
 
-  addNodeItem(word, tree);
-  addNodeToTree(tree);
+  while (dataUri === "") {
+    await createUri();
+    dataUri = await getUri();
+  }
+  const dataArray = await openFile(dataUri);
+
+  if (dataArray) {
+    const bts = new BinarySearchTree();
+
+    dataArray.forEach((d) => {
+      bts.insert(d.data);
+    });
+
+    const dataArrayLNF = [];
+    await duyet_LNF(bts.root, dataArrayLNF);
+    return dataArrayLNF;
+  } else {
+    return [];
+  }
+
+  // console.log(dataArrayLNF);
 };
+
+const duyet_LNF = async (root, dataArrayLNF) => {
+  if (root !== null) {
+    await duyet_LNF(root.left, dataArrayLNF);
+
+    dataArrayLNF.push(root.word.wordItem);
+    await duyet_LNF(root.right, dataArrayLNF);
+  }
+};
+
 export const deleteNode = () => {};
 
 export const updateNode = () => {};

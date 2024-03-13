@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { List } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { addNode } from "../controller/tree";
+import { addWord, readWord } from "../controller/tree";
 const windowWidth = Dimensions.get("window").width;
 
 const WordList = ({ words, setListModeAdd, setWordItem, setItemMode }) => {
@@ -38,7 +38,7 @@ const WordList = ({ words, setListModeAdd, setWordItem, setItemMode }) => {
                   name="save"
                   size={24}
                   color="black"
-                  onPress={() => addNode(word)}
+                  onPress={() => addWord(word, index)}
                 />
               </View>
             )}

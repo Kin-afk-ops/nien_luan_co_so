@@ -8,7 +8,6 @@ import WordList from "../components/WordList";
 import Loading from "../components/Loading";
 import WordItem from "../components/WordItem";
 import { useBackHandler } from "@react-native-community/hooks";
-import user from "../data/user.json";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;

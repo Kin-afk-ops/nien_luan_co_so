@@ -7,11 +7,18 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { addWord, readWord } from "../controller/tree";
 const windowWidth = Dimensions.get("window").width;
 
-const WordList = ({ words, setListModeAdd, setWordItem, setItemMode }) => {
-  const handleSetWordItem = (word) => {
+const WordList = ({
+  setIndexWord,
+  words,
+  setListModeAdd,
+  setWordItem,
+  setItemMode,
+}) => {
+  const handleSetWordItem = (word, index) => {
     setListModeAdd(false);
     setWordItem(word);
     setItemMode(true);
+    setIndexWord(index);
   };
 
   return (
@@ -28,21 +35,7 @@ const WordList = ({ words, setListModeAdd, setWordItem, setItemMode }) => {
               marginTop: 10,
               borderRadius: 10,
             }}
-            right={(props) => (
-              <View>
-                {/* {audioUrl && ( */}
-                {/* <MaterialIcons name="multitrack-audio" size={24} color="black" /> */}
-                {/* )} */}
-
-                <FontAwesome5
-                  name="save"
-                  size={24}
-                  color="black"
-                  onPress={() => addWord(word, index)}
-                />
-              </View>
-            )}
-            onPress={() => handleSetWordItem(word)}
+            onPress={() => handleSetWordItem(word, index)}
           />
         ))}
     </View>

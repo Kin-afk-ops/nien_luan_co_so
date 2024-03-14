@@ -42,9 +42,9 @@ const WordMeaning = ({ meaning }) => {
             style={{
               marginBottom: 20,
             }}
+            key={index}
           >
             <Text
-              key={index}
               style={{
                 color: textColor,
 

@@ -5,7 +5,8 @@ import { Dimensions } from "react-native";
 import styled from "styled-components/native";
 import { primaryColor, textColor, textHeaderColor } from "./styles/global";
 import WordMeaning from "./WordMeaning";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { addWord, deleteWord } from "../controller/tree";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -23,9 +24,7 @@ const MeaningContainer = styled.View`
   margin-top: 30px;
 `;
 
-const handleSaveWord = () => {};
-
-const WordItem = ({ wordItem }) => {
+const WordItem = ({ wordItem, indexWord, screenMode }) => {
   return (
     <ItemContainer width={windowWidth}>
       <View
@@ -44,9 +43,23 @@ const WordItem = ({ wordItem }) => {
         >
           {wordItem.word}
         </Text>
-        <TouchableOpacity onPress={handleSaveWord}>
-          <FontAwesome5 name="save" size={30} color="black" />
-        </TouchableOpacity>
+
+        {screenMode === "Add" ? (
+          <TouchableOpacity onPress={() => addWord(wordItem, indexWord)}>
+            <MaterialIcons name="save-alt" size={30} color="black" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() =>
+              deleteWord({
+                word: wordItem.word,
+                index: indexWord,
+              })
+            }
+          >
+            <MaterialIcons name="delete" size={30} color="black" />
+          </TouchableOpacity>
+        )}
       </View>
 
       <View

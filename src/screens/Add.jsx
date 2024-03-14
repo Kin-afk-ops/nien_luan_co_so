@@ -19,6 +19,7 @@ const Add = ({}) => {
   const [wordItem, setWordItem] = useState({});
   const [loading, setLoading] = useState(false);
   const [listModeAdd, setListModeAdd] = useState(true);
+  const [indexWord, setIndexWord] = useState(0);
 
   // const exitApp = () => BackHandler.exitApp()
   // useEffect(() => {
@@ -105,6 +106,7 @@ const Add = ({}) => {
           <>
             {listModeAdd && (
               <WordList
+                setIndexWord={setIndexWord}
                 words={words}
                 setListModeAdd={setListModeAdd}
                 setWordItem={setWordItem}
@@ -114,7 +116,13 @@ const Add = ({}) => {
           </>
         )}
 
-        {itemMode && <WordItem wordItem={wordItem} />}
+        {itemMode && (
+          <WordItem
+            wordItem={wordItem}
+            indexWord={indexWord}
+            screenMode={"Add"}
+          />
+        )}
       </ScrollView>
     </Container>
   );

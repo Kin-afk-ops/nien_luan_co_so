@@ -55,7 +55,10 @@ const createFile = async (data, uri) => {
         await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(data), {
           encoding: FileSystem.EncodingType.UTF8,
         });
+
+        alert("Đã lưu từ");
       })
+
       .catch((e) => {
         console.log(e);
       });
@@ -64,7 +67,7 @@ const createFile = async (data, uri) => {
   }
 };
 
-const savFile = async (data, dataUri) => {
+const saveFile = async (data, dataUri) => {
   const uriFolder = await StorageAccessFramework.readDirectoryAsync(dataUri);
 
   const uriFile = uriFolder[0];
@@ -100,9 +103,6 @@ const checkTree = (data, index, word) => {
   return checked;
 };
 
-export const readTree = () => {};
-export const checkNode = () => {};
-
 export const addWord = async (word, index) => {
   let dataUri = await getUri();
 
@@ -116,6 +116,7 @@ export const addWord = async (word, index) => {
       {
         data: word,
         index: index,
+        read: 0,
       },
     ];
 
@@ -130,10 +131,11 @@ export const addWord = async (word, index) => {
       const data = {
         data: word,
         index: index,
+        read: 0,
       };
 
       dataArray.push(data);
-      await savFile(dataArray, dataUri);
+      await saveFile(dataArray, dataUri);
       alert("Đã lưu từ");
     }
   }
@@ -152,7 +154,7 @@ export const readWord = async () => {
     const bts = new BinarySearchTree();
 
     dataArray.forEach((d) => {
-      bts.insert(d.data);
+      bts.insert(d.data, d.read, d.index);
     });
 
     const dataArrayLNF = [];
@@ -161,19 +163,69 @@ export const readWord = async () => {
   } else {
     return [];
   }
-
-  // console.log(dataArrayLNF);
 };
 
 const duyet_LNF = async (root, dataArrayLNF) => {
   if (root !== null) {
     await duyet_LNF(root.left, dataArrayLNF);
 
-    dataArrayLNF.push(root.word.wordItem);
+    dataArrayLNF.push({
+      data: root.word.wordItem,
+      read: root.word.read,
+      index: root.word.index,
+    });
     await duyet_LNF(root.right, dataArrayLNF);
   }
 };
 
-export const deleteNode = () => {};
+export const checkWord = async (value) => {
+  let dataUri = await getUri();
+
+  while (dataUri === "") {
+    await createUri();
+    dataUri = await getUri();
+  }
+  const dataArray = await openFile(dataUri);
+  if (dataArray === null) {
+    return false;
+  } else {
+    const bts = new BinarySearchTree();
+    dataArray.map((d) => {
+      bts.insert(d.data, d.read, d.index);
+    });
+
+    return bts.search(bts.root, value);
+  }
+};
+
+export const deleteWord = async (value) => {
+  let dataUri = await getUri();
+
+  while (dataUri === "") {
+    await createUri();
+    dataUri = await getUri();
+  }
+  const dataArray = await openFile(dataUri);
+
+  if (dataArray === null) {
+    alert("file rong");
+  } else {
+    const bts = new BinarySearchTree();
+    dataArray.map((d) => {
+      bts.insert(d.data, d.read, d.index);
+    });
+
+    // bts.delete(value);
+
+    console.log(value);
+
+    // const dataArrayLNF = [];
+    // await duyet_LNF(bts.root, dataArrayLNF);
+
+    // await saveFile(dataArrayLNF, dataUri);
+
+    alert("da xoa");
+  }
+};
 
 export const updateNode = () => {};

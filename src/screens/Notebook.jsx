@@ -24,6 +24,7 @@ const Notebook = () => {
   const [word, setWord] = useState({});
   const [loading, setLoading] = useState(false);
   const [words, setWords] = useState([]);
+  const [indexWord, setIndexWord] = useState(0);
   const index = 0;
 
   const isFocused = useIsFocused();
@@ -62,39 +63,33 @@ const Notebook = () => {
               words?.map((w, index) => (
                 <List.Item
                   key={index}
-                  title={w.word}
-                  description={w.phonetic && w.phonetic}
+                  title={w.data.word}
+                  description={w.data.phonetic && w.data.phonetic}
                   style={{
                     width: windowWidth * 0.9,
                     backgroundColor: "#fff",
                     marginTop: 10,
                     borderRadius: 10,
                   }}
-                  right={(props) => (
-                    <View
-                      style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {/* {audioUrl && ( */}
-                      {/* <MaterialIcons name="multitrack-audio" size={24} color="black" /> */}
-                      {/* )} */}
-
-                      <FontAwesome5
-                        name="save"
-                        size={24}
-                        color="#00CCFF"
-                        // onPress={handleWord}
-                      />
-                    </View>
-                  )}
-                  onPress={() => handleSetWordItem(w)}
+                  onPress={() => {
+                    handleSetWordItem(w.data);
+                    setIndexWord(w.index);
+                  }}
                 />
               ))}
           </View>
         ) : (
-          <View>{loading ? <Loading /> : <WordItem wordItem={word} />}</View>
+          <View>
+            {loading ? (
+              <Loading />
+            ) : (
+              <WordItem
+                wordItem={word}
+                indexWord={indexWord}
+                screenMode={"NodeBook"}
+              />
+            )}
+          </View>
         )}
       </ScrollView>
     </Container>

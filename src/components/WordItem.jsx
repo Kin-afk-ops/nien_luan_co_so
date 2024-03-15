@@ -45,7 +45,7 @@ const WordItem = ({ wordItem, indexWord, screenMode }) => {
         </Text>
 
         {screenMode === "Add" ? (
-          <TouchableOpacity onPress={() => addWord(wordItem, indexWord)}>
+          <TouchableOpacity onPress={() => addWord(wordItem.word, indexWord)}>
             <MaterialIcons name="save-alt" size={30} color="black" />
           </TouchableOpacity>
         ) : (

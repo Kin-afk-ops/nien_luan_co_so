@@ -32,11 +32,10 @@ export default class BinarySearchTree {
   }
   insertNode(root, newNode) {
     if (
-      newNode.word.wordItem.word === root.word.wordItem.word &&
-      newNode.word.index === root.word.index
+      newNode.word.wordItem < root.word.wordItem ||
+      (newNode.word.wordItem === root.word.wordItem &&
+        newNode.word.index !== root.word.index)
     ) {
-      alert("Node trong cây đã được tạo");
-    } else if (newNode.word.wordItem.word <= root.word.wordItem.word) {
       if (root.left === null) {
         root.left = newNode;
       } else {
@@ -56,11 +55,11 @@ export default class BinarySearchTree {
       return false;
     } else {
       if (
-        root.word.wordItem.word === value.word &&
+        root.word.wordItem === value.word &&
         root.word.index === value.index
       ) {
         return true;
-      } else if (value.word <= root.word.wordItem.word) {
+      } else if (value.word <= root.word.wordItem) {
         return this.search(root.left, value);
       } else {
         return this.search(root.right, value);
@@ -86,8 +85,15 @@ export default class BinarySearchTree {
     }
 
     if (
-      root.word.wordItem.word === value.word &&
-      root.word.index === value.index
+      value.word < root.word.wordItem ||
+      (value.word === root.word.wordItem && value.index !== root.word.index)
+    ) {
+      root.left = this.deleteNode(root.left, value);
+    } else if (value.word > root.word.wordItem) {
+      root.right = this.deleteNode(root.right, value);
+    } else if (
+      value.word === root.word.wordItem &&
+      value.index === root.word.index
     ) {
       if (!root.left && !root.right) {
         return null;
@@ -99,14 +105,10 @@ export default class BinarySearchTree {
       }
 
       root.word = this.min(root.right);
-      root.right = this.deleteNode(root.right, {
-        word: root.word.wordItem.word,
+      this.right = this.deleteNode(root.right, {
+        word: root.word.wordItem,
         index: root.word.index,
       });
-    } else if (value.word <= root.word.wordItem.word) {
-      root.left = this.deleteNode(root.left, value);
-    } else if (value.word > root.word.wordItem.word) {
-      root.right = this.deleteNode(root.right, value);
     }
     return root;
   }

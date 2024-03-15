@@ -37,7 +37,13 @@ const openFile = async (dataUri) => {
   if (uriFile) {
     const file = await StorageAccessFramework.readAsStringAsync(uriFile);
 
-    return JSON.parse(file);
+    try {
+      const jsonData = JSON.parse(file);
+      return jsonData.data;
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      return null;
+    }
   } else {
     return null;
   }
@@ -52,7 +58,9 @@ const createFile = async (data, uri) => {
     )
       .then(async (fileUri) => {
         // Save data to newly created file
-        await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(data), {
+
+        const jsonString = JSON.stringify({ data: data });
+        await FileSystem.writeAsStringAsync(fileUri, jsonString, {
           encoding: FileSystem.EncodingType.UTF8,
         });
 
@@ -73,9 +81,14 @@ const saveFile = async (data, dataUri) => {
   const uriFile = uriFolder[0];
 
   if (uriFile) {
-    await FileSystem.writeAsStringAsync(uriFile, JSON.stringify(data), {
+    const jsonString = JSON.stringify({ data: data });
+    await FileSystem.writeAsStringAsync(uriFile, jsonString, {
       encoding: FileSystem.EncodingType.UTF8,
     });
+
+    // console.log(JSON.stringify({ data: data }));
+
+    console.log(data);
   }
 };
 
@@ -96,7 +109,7 @@ const checkTree = (data, index, word) => {
   let checked = false;
 
   data.forEach((d) => {
-    if (d.index === index && d.data.word === word.word) {
+    if (d.index === index && d.data === word) {
       checked = true;
     }
   });
@@ -215,16 +228,14 @@ export const deleteWord = async (value) => {
       bts.insert(d.data, d.read, d.index);
     });
 
-    // bts.delete(value);
+    bts.delete(value);
 
-    console.log(value);
+    const dataArrayLNF = [];
+    await duyet_LNF(bts.root, dataArrayLNF);
+    // console.log(JSON.stringify(dataArrayLNF));
+    await saveFile(dataArrayLNF, dataUri);
 
-    // const dataArrayLNF = [];
-    // await duyet_LNF(bts.root, dataArrayLNF);
-
-    // await saveFile(dataArrayLNF, dataUri);
-
-    alert("da xoa");
+    // alert("da xoa");
   }
 };
 

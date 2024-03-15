@@ -32,6 +32,7 @@ const Notebook = () => {
   useEffect(() => {
     const getWords = async () => {
       setWords(await readWord());
+      // await readWord();
     };
 
     getWords();
@@ -46,12 +47,23 @@ const Notebook = () => {
     return false;
   });
 
-  const handleSetWordItem = (word) => {
-    setListModeNote(false);
-    setLoading(true);
-
-    setWord(word);
-    setLoading(false);
+  const handleSetWordItem = async (word, index) => {
+    try {
+      if (word) {
+        setListModeNote(false);
+        setLoading(true);
+        const res = await axios.get(
+          `https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`
+        );
+        if (res.data) {
+          setLoading(false);
+          // setWord(res.data[index]);
+          setWord(res.data[index]);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -63,8 +75,8 @@ const Notebook = () => {
               words?.map((w, index) => (
                 <List.Item
                   key={index}
-                  title={w.data.word}
-                  description={w.data.phonetic && w.data.phonetic}
+                  title={w.data}
+                  // description={w.data.phonetic && w.data.phonetic}
                   style={{
                     width: windowWidth * 0.9,
                     backgroundColor: "#fff",
@@ -72,7 +84,7 @@ const Notebook = () => {
                     borderRadius: 10,
                   }}
                   onPress={() => {
-                    handleSetWordItem(w.data);
+                    handleSetWordItem(w.data, w.index);
                     setIndexWord(w.index);
                   }}
                 />

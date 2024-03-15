@@ -32,8 +32,8 @@ export default class BinarySearchTree {
   }
   insertNode(root, newNode) {
     if (
-      newNode.word.wordItem < root.word.wordItem ||
-      (newNode.word.wordItem === root.word.wordItem &&
+      newNode.word.wordItem.word < root.word.wordItem.word ||
+      (newNode.word.wordItem.word === root.word.wordItem.word &&
         newNode.word.index !== root.word.index)
     ) {
       if (root.left === null) {
@@ -55,14 +55,31 @@ export default class BinarySearchTree {
       return false;
     } else {
       if (
-        root.word.wordItem === value.word &&
+        root.word.wordItem.word === value.word &&
         root.word.index === value.index
       ) {
         return true;
-      } else if (value.word <= root.word.wordItem) {
+      } else if (value.word <= root.word.wordItem.word) {
         return this.search(root.left, value);
       } else {
         return this.search(root.right, value);
+      }
+    }
+  }
+
+  searchNode(root, searchQuery, dataSearch) {
+    if (root) {
+      if (root.word.wordItem.word === searchQuery) {
+        dataSearch.push({
+          data: root.word.wordItem,
+          index: root.word.index,
+          read: root.word.read,
+        });
+      }
+      if (searchQuery <= root.word.wordItem.word) {
+        this.searchNode(root.left, searchQuery, dataSearch);
+      } else {
+        this.searchNode(root.right, searchQuery, dataSearch);
       }
     }
   }
@@ -85,14 +102,15 @@ export default class BinarySearchTree {
     }
 
     if (
-      value.word < root.word.wordItem ||
-      (value.word === root.word.wordItem && value.index !== root.word.index)
+      value.word < root.word.wordItem.word ||
+      (value.word === root.word.wordItem.word &&
+        value.index !== root.word.index)
     ) {
       root.left = this.deleteNode(root.left, value);
-    } else if (value.word > root.word.wordItem) {
+    } else if (value.word > root.word.wordItem.word) {
       root.right = this.deleteNode(root.right, value);
     } else if (
-      value.word === root.word.wordItem &&
+      value.word === root.word.wordItem.word &&
       value.index === root.word.index
     ) {
       if (!root.left && !root.right) {
@@ -106,10 +124,33 @@ export default class BinarySearchTree {
 
       root.word = this.min(root.right);
       this.right = this.deleteNode(root.right, {
-        word: root.word.wordItem,
+        word: root.word.wordItem.word,
         index: root.word.index,
       });
     }
+    return root;
+  }
+
+  updateReadTree(root, value) {
+    if (!root) {
+      return null; // Trường hợp cơ sở: cây rỗng
+    }
+
+    // So sánh từ và chỉ số index
+    if (
+      value.word === root.word.wordItem.word &&
+      value.index === root.word.index
+    ) {
+      root.word.read++; // Tăng giá trị của thuộc tính read
+    }
+
+    // Chỉ gọi đệ quy vào bên trái hoặc bên phải
+    if (value.word <= root.word.wordItem.word) {
+      root.left = this.updateReadTree(root.left, value);
+    } else {
+      root.right = this.updateReadTree(root.right, value);
+    }
+
     return root;
   }
 }

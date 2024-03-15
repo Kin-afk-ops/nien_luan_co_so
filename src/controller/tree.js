@@ -38,8 +38,9 @@ const openFile = async (dataUri) => {
     const file = await StorageAccessFramework.readAsStringAsync(uriFile);
 
     try {
-      const jsonData = JSON.parse(file);
-      return jsonData.data;
+      // const jsonData = JSON.parse(file);
+      // return jsonData;
+      return file;
     } catch (error) {
       console.error("Error parsing JSON:", error);
       return null;
@@ -53,13 +54,13 @@ const createFile = async (data, uri) => {
   if (data) {
     await StorageAccessFramework.createFileAsync(
       uri,
-      "tree.json",
-      "application/json"
+      "tree.txt",
+      "application/text"
     )
       .then(async (fileUri) => {
         // Save data to newly created file
 
-        const jsonString = JSON.stringify({ data: data });
+        const jsonString = JSON.stringify(data);
         await FileSystem.writeAsStringAsync(fileUri, jsonString, {
           encoding: FileSystem.EncodingType.UTF8,
         });
@@ -81,35 +82,38 @@ const saveFile = async (data, dataUri) => {
   const uriFile = uriFolder[0];
 
   if (uriFile) {
-    const jsonString = JSON.stringify({ data: data });
-    await FileSystem.writeAsStringAsync(uriFile, jsonString, {
-      encoding: FileSystem.EncodingType.UTF8,
-    });
+    await FileSystem.deleteAsync(uriFile);
 
-    // console.log(JSON.stringify({ data: data }));
+    // await FileSystem.writeAsStringAsync(uriFile, jsonString, {
+    //   encoding: FileSystem.EncodingType.UTF8,
+    //   append: false,
+    // });
 
-    console.log(data);
+    await StorageAccessFramework.createFileAsync(
+      dataUri,
+      "tree.txt",
+      "application/text"
+    )
+      .then(async (fileUri) => {
+        // Save data to newly created file
+
+        const jsonString = JSON.stringify(data);
+        await FileSystem.writeAsStringAsync(fileUri, jsonString, {
+          encoding: FileSystem.EncodingType.UTF8,
+        });
+      })
+
+      .catch((e) => {
+        console.log(e);
+      });
   }
-};
-
-const addNodeToTree = async (tree) => {
-  let dataUri = await getUri();
-
-  while (!dataUri) {
-    await createUri();
-    dataUri = await getUri();
-  }
-
-  // Check if permission granted
-
-  // Create file and pass it's SAF URI
 };
 
 const checkTree = (data, index, word) => {
   let checked = false;
 
   data.forEach((d) => {
-    if (d.index === index && d.data === word) {
+    if (d.index === index && d.data.word === word.word) {
       checked = true;
     }
   });
@@ -123,7 +127,8 @@ export const addWord = async (word, index) => {
     await createUri();
     dataUri = await getUri();
   }
-  const treeFile = await openFile(dataUri);
+
+  const treeFile = JSON.parse(await openFile(dataUri));
   if (treeFile === null) {
     const dataArray = [
       {
@@ -134,6 +139,7 @@ export const addWord = async (word, index) => {
     ];
 
     await createFile(dataArray, dataUri);
+    alert("Đã lưu từ");
   } else {
     const dataArray = treeFile;
     const checked = checkTree(dataArray, index, word);
@@ -161,7 +167,7 @@ export const readWord = async () => {
     await createUri();
     dataUri = await getUri();
   }
-  const dataArray = await openFile(dataUri);
+  const dataArray = JSON.parse(await openFile(dataUri));
 
   if (dataArray) {
     const bts = new BinarySearchTree();
@@ -171,23 +177,23 @@ export const readWord = async () => {
     });
 
     const dataArrayLNF = [];
-    await duyet_LNF(bts.root, dataArrayLNF);
+    duyet_LNF(bts.root, dataArrayLNF);
     return dataArrayLNF;
   } else {
     return [];
   }
 };
 
-const duyet_LNF = async (root, dataArrayLNF) => {
+const duyet_LNF = (root, dataArrayLNF) => {
   if (root !== null) {
-    await duyet_LNF(root.left, dataArrayLNF);
+    duyet_LNF(root.left, dataArrayLNF);
 
     dataArrayLNF.push({
       data: root.word.wordItem,
       read: root.word.read,
       index: root.word.index,
     });
-    await duyet_LNF(root.right, dataArrayLNF);
+    duyet_LNF(root.right, dataArrayLNF);
   }
 };
 
@@ -198,7 +204,7 @@ export const checkWord = async (value) => {
     await createUri();
     dataUri = await getUri();
   }
-  const dataArray = await openFile(dataUri);
+  const dataArray = JSON.parse(await openFile(dataUri));
   if (dataArray === null) {
     return false;
   } else {
@@ -211,6 +217,29 @@ export const checkWord = async (value) => {
   }
 };
 
+export const searchWord = async (searchQuery) => {
+  let dataUri = await getUri();
+
+  while (dataUri === "") {
+    await createUri();
+    dataUri = await getUri();
+  }
+  const dataArray = JSON.parse(await openFile(dataUri));
+  if (dataArray === null) {
+    alert("Chưa có từ vựng");
+  } else {
+    const bts = new BinarySearchTree();
+    dataArray.forEach((d) => {
+      bts.insert(d.data, d.read, d.index);
+    });
+    const dataSearch = [];
+
+    bts.searchNode(bts.root, searchQuery, dataSearch);
+
+    return dataSearch;
+  }
+};
+
 export const deleteWord = async (value) => {
   let dataUri = await getUri();
 
@@ -218,25 +247,89 @@ export const deleteWord = async (value) => {
     await createUri();
     dataUri = await getUri();
   }
-  const dataArray = await openFile(dataUri);
+  const dataArray = JSON.parse(await openFile(dataUri));
 
   if (dataArray === null) {
     alert("file rong");
   } else {
     const bts = new BinarySearchTree();
-    dataArray.map((d) => {
+    dataArray.forEach((d) => {
       bts.insert(d.data, d.read, d.index);
     });
 
     bts.delete(value);
 
     const dataArrayLNF = [];
-    await duyet_LNF(bts.root, dataArrayLNF);
-    // console.log(JSON.stringify(dataArrayLNF));
+    duyet_LNF(bts.root, dataArrayLNF);
+
     await saveFile(dataArrayLNF, dataUri);
 
-    // alert("da xoa");
+    alert("Đã xoá từ");
   }
 };
 
-export const updateNode = () => {};
+export const updateRead = async (value) => {
+  let dataUri = await getUri();
+
+  while (dataUri === "") {
+    await createUri();
+    dataUri = await getUri();
+  }
+  const dataArray = JSON.parse(await openFile(dataUri));
+
+  if (dataArray === null) {
+    alert("Chưa có từ vựng");
+  } else {
+    const bts = new BinarySearchTree();
+    dataArray.forEach((d) => {
+      bts.insert(d.data, d.read, d.index);
+    });
+
+    bts.updateReadTree(bts.root, value);
+
+    const dataArrayRead = [];
+
+    duyet_LNF(bts.root, dataArrayRead);
+    await saveFile(dataArrayRead, dataUri);
+  }
+};
+
+const duyet_LNF_Frequent = (root, dataArrayLNF) => {
+  if (root !== null) {
+    duyet_LNF_Frequent(root.left, dataArrayLNF);
+
+    if (root.word.read >= 5) {
+      dataArrayLNF.push({
+        data: root.word.wordItem,
+        read: root.word.read,
+        index: root.word.index,
+      });
+    }
+
+    duyet_LNF_Frequent(root.right, dataArrayLNF);
+  }
+};
+
+export const readFrequentWord = async () => {
+  let dataUri = await getUri();
+
+  while (dataUri === "") {
+    await createUri();
+    dataUri = await getUri();
+  }
+  const dataArray = JSON.parse(await openFile(dataUri));
+
+  if (dataArray) {
+    const bts = new BinarySearchTree();
+
+    dataArray.forEach((d) => {
+      bts.insert(d.data, d.read, d.index);
+    });
+
+    const dataArrayLNF = [];
+    duyet_LNF_Frequent(bts.root, dataArrayLNF);
+    return dataArrayLNF;
+  } else {
+    return [];
+  }
+};

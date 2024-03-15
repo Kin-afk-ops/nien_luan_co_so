@@ -6,7 +6,7 @@ import styled from "styled-components/native";
 import { primaryColor, textColor, textHeaderColor } from "./styles/global";
 import WordMeaning from "./WordMeaning";
 import { MaterialIcons } from "@expo/vector-icons";
-import { addWord, deleteWord } from "../controller/tree";
+import { addWord, deleteWord, readWord } from "../controller/tree";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -24,7 +24,22 @@ const MeaningContainer = styled.View`
   margin-top: 30px;
 `;
 
-const WordItem = ({ wordItem, indexWord, screenMode }) => {
+const WordItem = ({
+  wordItem,
+  indexWord,
+  screenMode,
+  setWords,
+  setListMode,
+}) => {
+  const handleDelete = async (wordItem, indexWord) => {
+    await deleteWord({
+      word: wordItem.word,
+      index: indexWord,
+    });
+
+    setWords(await readWord());
+    setListMode(true);
+  };
   return (
     <ItemContainer width={windowWidth}>
       <View
@@ -45,18 +60,11 @@ const WordItem = ({ wordItem, indexWord, screenMode }) => {
         </Text>
 
         {screenMode === "Add" ? (
-          <TouchableOpacity onPress={() => addWord(wordItem.word, indexWord)}>
+          <TouchableOpacity onPress={() => addWord(wordItem, indexWord)}>
             <MaterialIcons name="save-alt" size={30} color="black" />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            onPress={() =>
-              deleteWord({
-                word: wordItem.word,
-                index: indexWord,
-              })
-            }
-          >
+          <TouchableOpacity onPress={() => handleDelete(wordItem, indexWord)}>
             <MaterialIcons name="delete" size={30} color="black" />
           </TouchableOpacity>
         )}

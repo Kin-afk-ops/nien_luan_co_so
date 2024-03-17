@@ -4,8 +4,6 @@ class Node {
       wordItem: word,
       read: read,
       index: index,
-      like: false,
-      done: false,
     }),
       (this.left = null),
       (this.right = null);
@@ -30,6 +28,7 @@ export default class BinarySearchTree {
       this.insertNode(this.root, newNode);
     }
   }
+
   insertNode(root, newNode) {
     if (
       newNode.word.wordItem.word < root.word.wordItem.word ||

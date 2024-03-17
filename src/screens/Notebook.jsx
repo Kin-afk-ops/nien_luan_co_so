@@ -1,7 +1,6 @@
-import { StyleSheet, View, ScrollView, BackHandler } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { useBackHandler } from "@react-native-community/hooks";
 

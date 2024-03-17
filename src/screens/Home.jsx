@@ -98,64 +98,68 @@ const Home = () => {
         )}
 
         {listModeHome ? (
-          <View
-            style={{
-              textAlign: "left",
-              width: windowWidth * 0.9,
-              marginTop: 60,
-            }}
-          >
-            <View
-              style={{
-                height: 1,
-                width: windowWidth * 0.9,
-                backgroundColor: secondaryColor,
-              }}
-            ></View>
-            <Text
-              variant="titleLarge"
-              style={{ fontWeight: "bold", marginTop: 10 }}
-            >
-              Từ vựng tra thường xuyên:
-            </Text>
+          <>
+            {words.length !== 0 && (
+              <View
+                style={{
+                  textAlign: "left",
+                  width: windowWidth * 0.9,
+                  marginTop: 60,
+                }}
+              >
+                <View
+                  style={{
+                    height: 1,
+                    width: windowWidth * 0.9,
+                    backgroundColor: secondaryColor,
+                  }}
+                ></View>
+                <Text
+                  variant="titleLarge"
+                  style={{ fontWeight: "bold", marginTop: 10 }}
+                >
+                  Từ vựng tra thường xuyên:
+                </Text>
 
-            <View>
-              {words.length !== 0 &&
-                words.map((w, index) => (
-                  <List.Item
-                    key={index}
-                    title={w.data.word}
-                    description={w.data.phonetic && w.data.phonetic}
-                    style={{
-                      width: windowWidth * 0.9,
-                      backgroundColor: "#fff",
-                      marginTop: 10,
-                      borderRadius: 10,
-                    }}
-                    right={(props) => (
-                      <View
+                <View>
+                  {words.length !== 0 &&
+                    words.map((w, index) => (
+                      <List.Item
+                        key={index}
+                        title={w.data.word}
+                        description={w.data.phonetic && w.data.phonetic}
                         style={{
-                          alignItems: "center",
-                          justifyContent: "center",
+                          width: windowWidth * 0.9,
+                          backgroundColor: "#fff",
+                          marginTop: 10,
+                          borderRadius: 10,
                         }}
-                      >
-                        {/* {audioUrl && ( */}
-                        {/* <MaterialIcons name="multitrack-audio" size={24} color="black" /> */}
-                        {/* )} */}
+                        right={(props) => (
+                          <View
+                            style={{
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {/* {audioUrl && ( */}
+                            {/* <MaterialIcons name="multitrack-audio" size={24} color="black" /> */}
+                            {/* )} */}
 
-                        <FontAwesome5
-                          name="save"
-                          size={24}
-                          color="#00CCFF"
-                          // onPress={handleWord}
-                        />
-                      </View>
-                    )}
-                    onPress={() => handleWord(w)}
-                  />
-                ))}
-            </View>
-          </View>
+                            <FontAwesome5
+                              name="save"
+                              size={24}
+                              color="#00CCFF"
+                              // onPress={handleWord}
+                            />
+                          </View>
+                        )}
+                        onPress={() => handleWord(w)}
+                      />
+                    ))}
+                </View>
+              </View>
+            )}
+          </>
         ) : (
           <View>
             {loading ? (

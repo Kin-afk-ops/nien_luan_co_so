@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
-import { Text, List } from "react-native-paper";
+import { Text } from "react-native-paper";
 
 import styled from "styled-components/native";
 import { primaryColor, textColor } from "./styles/global";

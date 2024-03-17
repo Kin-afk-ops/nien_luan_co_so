@@ -2,11 +2,9 @@ import * as FileSystem from "expo-file-system";
 const { StorageAccessFramework } = FileSystem;
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import tree from "../data/tree.json";
-
 import BinarySearchTree from "../class/Node";
 
-const createUri = async () => {
+export const createUri = async () => {
   const permissions =
     await StorageAccessFramework.requestDirectoryPermissionsAsync();
   if (permissions.granted) {
@@ -22,7 +20,7 @@ const createUri = async () => {
   }
 };
 
-const getUri = async () => {
+export const getUri = async () => {
   let dataUri = "";
 
   dataUri = await AsyncStorage.getItem("dataUri");
@@ -38,8 +36,6 @@ const openFile = async (dataUri) => {
     const file = await StorageAccessFramework.readAsStringAsync(uriFile);
 
     try {
-      // const jsonData = JSON.parse(file);
-      // return jsonData;
       return file;
     } catch (error) {
       console.error("Error parsing JSON:", error);
@@ -58,8 +54,6 @@ const createFile = async (data, uri) => {
       "application/text"
     )
       .then(async (fileUri) => {
-        // Save data to newly created file
-
         const jsonString = JSON.stringify(data);
         await FileSystem.writeAsStringAsync(fileUri, jsonString, {
           encoding: FileSystem.EncodingType.UTF8,
@@ -83,11 +77,6 @@ const saveFile = async (data, dataUri) => {
 
   if (uriFile) {
     await FileSystem.deleteAsync(uriFile);
-
-    // await FileSystem.writeAsStringAsync(uriFile, jsonString, {
-    //   encoding: FileSystem.EncodingType.UTF8,
-    //   append: false,
-    // });
 
     await StorageAccessFramework.createFileAsync(
       dataUri,
@@ -123,7 +112,7 @@ const checkTree = (data, index, word) => {
 export const addWord = async (word, index) => {
   let dataUri = await getUri();
 
-  while (dataUri === "") {
+  while (dataUri === "" || dataUri === null) {
     await createUri();
     dataUri = await getUri();
   }
@@ -167,6 +156,9 @@ export const readWord = async () => {
     await createUri();
     dataUri = await getUri();
   }
+
+  // await AsyncStorage.removeItem("dataUri");
+
   const dataArray = JSON.parse(await openFile(dataUri));
 
   if (dataArray) {

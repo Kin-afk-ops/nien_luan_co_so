@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { Text } from "react-native-paper";
 
@@ -9,12 +9,22 @@ import {
   secondaryColor,
   textColor,
 } from "../components/styles/global";
+import { useIsFocused } from "@react-navigation/native";
+import { readWord } from "../controller/tree";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Goal = () => {
-  const [value, setValue] = useState(0);
-  const temp = 1500;
+  const isFocused = useIsFocused();
+
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const getWord = async () => {
+      setTotal((await readWord()).length);
+    };
+    getWord();
+  }, [isFocused]);
 
   return (
     <Container width={windowWidth} height={windowHeight}>
@@ -30,25 +40,24 @@ const Goal = () => {
       >
         <CircularProgress
           radius={120}
-          value={temp}
+          value={total}
           textColor={textColor}
           titleFontSize={20}
           maxValue={3000}
           inActiveStrokeColor={"black"}
-          activeStrokeColor={temp !== 3000 ? secondaryColor : "green"}
+          activeStrokeColor={total !== 3000 ? secondaryColor : "green"}
           inActiveStrokeOpacity={0.2}
           inActiveStrokeWidth={25}
           activeStrokeWidth={25}
           duration={2000}
           progressValueColor={"#ecf0f1"}
           showProgressValue={false}
-          title={`${temp} từ/3000 từ`}
+          title={`${total} từ/3000 từ`}
           titleColor={textColor}
           titleStyle={{ fontWeight: "bold" }}
-          onAnimationComplete={() => setValue(50)}
         />
 
-        {temp !== 3000 ? (
+        {total !== 3000 ? (
           <View
             style={{
               marginTop: 20,
@@ -61,7 +70,7 @@ const Goal = () => {
                 color: textColor,
               }}
             >
-              Chỉ còn {3000 - temp} nữa thôi!
+              Chỉ còn {3000 - total} nữa thôi!
             </Text>
             <Text
               variant="headlineMedium"

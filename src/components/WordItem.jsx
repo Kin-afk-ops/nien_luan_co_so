@@ -1,15 +1,15 @@
-import { BackHandler, StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
-import React, { useEffect } from "react";
 import { Dimensions } from "react-native";
 import styled from "styled-components/native";
-import { primaryColor, textColor, textHeaderColor } from "./styles/global";
+import { textColor, textHeaderColor } from "./styles/global";
 import WordMeaning from "./WordMeaning";
 import { MaterialIcons } from "@expo/vector-icons";
 import { addWord, deleteWord, readWord } from "../controller/tree";
+import { AntDesign } from "@expo/vector-icons";
+import { Audio } from "expo-av";
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 
 const ItemContainer = styled.View`
   background-color: #fff;
@@ -40,6 +40,17 @@ const WordItem = ({
     setWords(await readWord());
     setListMode(true);
   };
+
+  const handlePlaySound = async (audio) => {
+    const soundObject = new Audio.Sound();
+
+    try {
+      await soundObject.loadAsync({ uri: audio });
+      await soundObject.playAsync();
+    } catch (error) {
+      console.log("Error playing sound:", error);
+    }
+  };
   return (
     <ItemContainer width={windowWidth}>
       <View
@@ -47,6 +58,7 @@ const WordItem = ({
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
+          flexWrap: "wrap",
         }}
       >
         <Text
@@ -82,29 +94,49 @@ const WordItem = ({
             {w.text && (
               <>
                 {index !== wordItem?.phonetics.length - 1 ? (
-                  <Text
-                    key={index}
-                    variant="titleLarge"
-                    style={{
-                      fontWeight: "bold",
-                      color: textColor,
-                      fontStyle: "italic",
-                    }}
-                  >
-                    {w.text},{" "}
-                  </Text>
+                  <View>
+                    <Text
+                      key={index}
+                      variant="titleLarge"
+                      style={{
+                        fontWeight: "bold",
+                        color: textColor,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {w.text}
+                      {", "}
+                    </Text>
+
+                    {w.audio && (
+                      <TouchableOpacity
+                        onPress={() => handlePlaySound(w.audio)}
+                      >
+                        <AntDesign name="sound" size={24} color="black" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 ) : (
-                  <Text
-                    key={index}
-                    variant="titleLarge"
-                    style={{
-                      fontWeight: "bold",
-                      color: textColor,
-                      fontStyle: "italic",
-                    }}
-                  >
-                    {w.text}.{" "}
-                  </Text>
+                  <View>
+                    <Text
+                      key={index}
+                      variant="titleLarge"
+                      style={{
+                        fontWeight: "bold",
+                        color: textColor,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {w.text}.
+                    </Text>
+                    {w.audio && (
+                      <TouchableOpacity
+                        onPress={() => handlePlaySound(w.audio)}
+                      >
+                        <AntDesign name="sound" size={24} color="black" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 )}
               </>
             )}
@@ -122,5 +154,3 @@ const WordItem = ({
 };
 
 export default WordItem;
-
-const styles = StyleSheet.create({});

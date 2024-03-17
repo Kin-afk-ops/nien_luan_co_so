@@ -2,9 +2,6 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import { List } from "react-native-paper";
-import { MaterialIcons } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { addWord, readWord } from "../controller/tree";
 const windowWidth = Dimensions.get("window").width;
 
 const WordList = ({

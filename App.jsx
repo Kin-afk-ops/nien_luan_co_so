@@ -1,19 +1,17 @@
 import "react-native-gesture-handler";
 import * as React from "react";
 import { PaperProvider } from "react-native-paper";
-import { StatusBar } from "expo-status-bar";
 import { Home, Goal, Notebook, Add, Info } from "./src/screens";
 import { FontAwesome } from "@expo/vector-icons";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-import WordMeaning from "./src/components/WordMeaning";
+
+import { createUri, getUri } from "./src/controller/tree";
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 const screenOptions = {
   tabBarShowLabel: false,
   headerShown: false,
@@ -29,6 +27,19 @@ const screenOptions = {
 };
 
 export default function App() {
+  React.useEffect(() => {
+    const getFile = async () => {
+      let dataUri = await getUri();
+
+      while (dataUri === "" || dataUri === null) {
+        await createUri();
+        dataUri = await getUri();
+      }
+    };
+
+    getFile();
+  }, []);
+
   return (
     <PaperProvider>
       <NavigationContainer>

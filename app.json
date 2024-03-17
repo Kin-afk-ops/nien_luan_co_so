@@ -12,14 +12,17 @@
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
+    "ios": {},
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ],
+      "package": "com.nguyenvulinh220803.project"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +33,23 @@
         {
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 31,
+            "targetSdkVersion": 31,
+            "buildToolsVersion": "31.0.0"
+          }
+        }
       ]
-    ]
-  }
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0cc98647-9152-47d8-8032-4b97a09bd3f0"
+      }
+    }
+  },
+  "main": "./App.jsx"
 }

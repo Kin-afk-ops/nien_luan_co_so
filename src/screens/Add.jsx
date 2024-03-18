@@ -153,7 +153,7 @@ const Add = ({}) => {
 
           {historyMode && (
             <>
-              {history.length !== 0 && (
+              {history?.length !== 0 && (
                 <View>
                   <Text
                     variant="titleMedium"
@@ -171,7 +171,7 @@ const Add = ({}) => {
                       borderRadius: 10,
                     }}
                   >
-                    {history.map((h, index) => (
+                    {history?.map((h, index) => (
                       <View key={index}>
                         <List.Item
                           title={h}

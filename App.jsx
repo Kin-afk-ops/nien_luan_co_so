@@ -27,14 +27,29 @@ const screenOptions = {
 };
 
 export default function App() {
+  const [permissionRequesting, setPermissionRequesting] = React.useState(false);
+
   React.useEffect(() => {
     const getFile = async () => {
       let dataUri = await getUri();
 
-      while (dataUri === "" || dataUri === null) {
-        await createUri();
-        dataUri = await getUri();
+      if (!dataUri) {
+        try {
+          if (!permissionRequesting) {
+            setPermissionRequesting(true);
+            await createUri();
+            dataUri = await getUri();
+          }
+        } catch (error) {
+          console.error("Error while creating or getting dataUri:", error);
+          // Xử lý lỗi
+        } finally {
+          setPermissionRequesting(false);
+        }
       }
+
+      // Tiếp tục xử lý dữ liệu nếu dataUri hợp lệ
+      // ...
     };
 
     getFile();

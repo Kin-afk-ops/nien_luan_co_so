@@ -169,7 +169,3 @@ const Notebook = () => {
 };
 
 export default Notebook;
-
-const styles = StyleSheet.create({
-  container: {},
-});

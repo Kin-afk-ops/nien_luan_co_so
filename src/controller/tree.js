@@ -4,22 +4,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import BinarySearchTree from "../class/Node";
 
-export const createUri = async () => {
-  const permissions =
-    await StorageAccessFramework.requestDirectoryPermissionsAsync();
-  if (permissions.granted) {
-    // Get the directory uri that was approved
-    let directoryUri = permissions.directoryUri;
-    try {
-      await AsyncStorage.setItem("dataUri", directoryUri);
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    alert("Bạn phải cấp quyền");
-  }
-};
-
 export const getUri = async () => {
   let dataUri = "";
 
@@ -58,15 +42,11 @@ const createFile = async (data, uri) => {
         await FileSystem.writeAsStringAsync(fileUri, jsonString, {
           encoding: FileSystem.EncodingType.UTF8,
         });
-
-        alert("Đã lưu từ");
       })
 
       .catch((e) => {
         console.log(e);
       });
-  } else {
-    alert("Lưu thất bại");
   }
 };
 
@@ -98,6 +78,25 @@ const saveFile = async (data, dataUri) => {
   }
 };
 
+export const createUri = async () => {
+  const permissions =
+    await StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+  if (permissions.granted) {
+    // Get the directory uri that was approved
+    let directoryUri = permissions.directoryUri;
+    try {
+      await AsyncStorage.setItem("dataUri", directoryUri);
+      const dataArray = [];
+      await createFile(dataArray, directoryUri);
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    alert("Bạn phải cấp quyền");
+  }
+};
+
 const checkTree = (data, index, word) => {
   let checked = false;
 
@@ -112,11 +111,6 @@ const checkTree = (data, index, word) => {
 export const addWord = async (word, index) => {
   let dataUri = await getUri();
 
-  while (dataUri === "" || dataUri === null) {
-    await createUri();
-    dataUri = await getUri();
-  }
-
   const treeFile = JSON.parse(await openFile(dataUri));
   if (treeFile === null) {
     const dataArray = [
@@ -127,7 +121,7 @@ export const addWord = async (word, index) => {
       },
     ];
 
-    await createFile(dataArray, dataUri);
+    await saveFile(dataArray, dataUri);
     alert("Đã lưu từ");
   } else {
     const dataArray = treeFile;
@@ -151,13 +145,6 @@ export const addWord = async (word, index) => {
 
 export const readWord = async () => {
   let dataUri = await getUri();
-
-  while (dataUri === "") {
-    await createUri();
-    dataUri = await getUri();
-  }
-
-  // await AsyncStorage.removeItem("dataUri");
 
   const dataArray = JSON.parse(await openFile(dataUri));
 
@@ -192,10 +179,6 @@ const duyet_LNF = (root, dataArrayLNF) => {
 export const checkWord = async (value) => {
   let dataUri = await getUri();
 
-  while (dataUri === "") {
-    await createUri();
-    dataUri = await getUri();
-  }
   const dataArray = JSON.parse(await openFile(dataUri));
   if (dataArray === null) {
     return false;
@@ -212,10 +195,6 @@ export const checkWord = async (value) => {
 export const searchWord = async (searchQuery) => {
   let dataUri = await getUri();
 
-  while (dataUri === "") {
-    await createUri();
-    dataUri = await getUri();
-  }
   const dataArray = JSON.parse(await openFile(dataUri));
   if (dataArray === null) {
     alert("Chưa có từ vựng");
@@ -235,10 +214,6 @@ export const searchWord = async (searchQuery) => {
 export const deleteWord = async (value) => {
   let dataUri = await getUri();
 
-  while (dataUri === "") {
-    await createUri();
-    dataUri = await getUri();
-  }
   const dataArray = JSON.parse(await openFile(dataUri));
 
   if (dataArray === null) {
@@ -263,10 +238,6 @@ export const deleteWord = async (value) => {
 export const updateRead = async (value) => {
   let dataUri = await getUri();
 
-  while (dataUri === "") {
-    await createUri();
-    dataUri = await getUri();
-  }
   const dataArray = JSON.parse(await openFile(dataUri));
 
   if (dataArray === null) {
@@ -305,16 +276,18 @@ const duyet_LNF_Frequent = (root, dataArrayLNF) => {
 export const readFrequentWord = async () => {
   let dataUri = await getUri();
 
-  while (dataUri === "") {
-    await createUri();
-    dataUri = await getUri();
+  let dataArray = [];
+
+  if (dataUri) {
+    dataArray = JSON.parse(await openFile(dataUri));
+  } else {
+    return [];
   }
-  const dataArray = JSON.parse(await openFile(dataUri));
 
   if (dataArray) {
     const bts = new BinarySearchTree();
 
-    dataArray.forEach((d) => {
+    dataArray?.forEach((d) => {
       bts.insert(d.data, d.read, d.index);
     });
 

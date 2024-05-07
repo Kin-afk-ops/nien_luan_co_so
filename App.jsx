@@ -33,20 +33,20 @@ export default function App() {
     const getFile = async () => {
       let dataUri = await getUri();
 
-      if (!dataUri) {
-        try {
-          if (!permissionRequesting) {
-            setPermissionRequesting(true);
-            await createUri();
-            dataUri = await getUri();
-          }
-        } catch (error) {
-          console.error("Error while creating or getting dataUri:", error);
-          // Xử lý lỗi
-        } finally {
-          setPermissionRequesting(false);
-        }
-      }
+      // if (!dataUri) {
+      //   try {
+      //     if (!permissionRequesting) {
+      //       setPermissionRequesting(true);
+      //       await createUri();
+      //       dataUri = await getUri();
+      //     }
+      //   } catch (error) {
+      //     console.error("Error while creating or getting dataUri:", error);
+      //     // Xử lý lỗi
+      //   } finally {
+      //     setPermissionRequesting(false);
+      //   }
+      // }
 
       // Tiếp tục xử lý dữ liệu nếu dataUri hợp lệ
       // ...
@@ -129,7 +129,7 @@ export default function App() {
                     }}
                   >
                     <FontAwesome
-                      name="plus-circle"
+                      name="search"
                       size={60}
                       color={focused ? "#00CCFF" : "#555"}
                     />

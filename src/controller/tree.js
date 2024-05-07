@@ -6,8 +6,14 @@ import BinarySearchTree from "../class/Node";
 
 export const getUri = async () => {
   let dataUri = "";
-
   dataUri = await AsyncStorage.getItem("dataUri");
+
+  while (dataUri === "") {
+    await createUri();
+
+    dataUri = await AsyncStorage.getItem("dataUri");
+  }
+
   return dataUri;
 };
 
